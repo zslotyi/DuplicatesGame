@@ -18,6 +18,7 @@ interface Playable{
     void setUpGUI();
     Collection setUpGameElements();
     void putOnEmptyField();
+    void reStartGame(int level);
 }
 abstract class DuplicatesGameGUI {
     final int BOARD_SIZE;
@@ -101,7 +102,7 @@ abstract class DuplicatesGameGUI {
             return li.remove(ge);
             //System.out.println(currentGameElements.size());
     }
-    boolean addGameElement(Object ge, List li){
+    boolean addGameElement(Object ge, List li){ 
         return li.add(ge);
     }
     int randomize(int high, int low) {
