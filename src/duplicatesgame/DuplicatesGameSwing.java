@@ -5,12 +5,14 @@
  */
 package duplicatesgame;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
 import static java.util.Collections.shuffle;
@@ -39,7 +41,9 @@ private static DuplicatesGameSwing INSTANCE;
 private final static Dimension DMNSN = new Dimension(75,75);
 private final static Dimension BTNDMNSN = new Dimension(70,70);
 private final static Font BUTTONFONT = new Font("Arial", Font.BOLD, 28);
-private JLabel statusField;
+private JLabel statusField, actualScore, scoreTitle;
+private JPanel scoreCard;
+private String level = "1";
 
 
         public static void main(String[] args) {
@@ -116,6 +120,24 @@ private JLabel statusField;
             statusField = new JLabel("Hello! Welcome to the game!");
             statusField.setFont(BUTTONFONT);
             contentPane.add(statusField,sf);
+            
+            GridBagConstraints sc = new GridBagConstraints();
+            sc.gridx=8;
+            sc.gridy=1;
+            sc.ipadx=20;
+            sc.gridheight=8;
+            
+            scoreCard = new JPanel();
+            GridLayout gl = new GridLayout(3,1);
+            scoreCard.setLayout(gl);
+            scoreTitle = new JLabel("Score: ");
+            scoreTitle.setFont(BUTTONFONT);
+            actualScore = new JLabel(dg.getActualScore());
+            actualScore.setFont(BUTTONFONT);
+            scoreCard.add(scoreTitle);
+            scoreCard.add(actualScore);
+            
+            contentPane.add(scoreCard,sc);
             return tempPanels;
         }
     
@@ -154,6 +176,7 @@ private JLabel statusField;
                 jp.remove(jb);
                 jp.validate();
                 jp.repaint();
+                move();
                 removeGameElement(ge,currentGameElements);
                 emptyFields.add(gf);
                 getWin(dg.getWin(ge, currentGameElements));
@@ -177,12 +200,26 @@ private JLabel statusField;
     @Override
     void getWin(int i){
         switch(i){
-            case 1: statusField.setText("You Won!!!"); statusField.setBackground(Color.GREEN); statusField.setOpaque(true); statusField.repaint(); endTheGame(); break;
+            case 1: 
+                level = dg.nextLevel();
+                statusField.setText("Level: " + level); 
+                statusField.setBackground(Color.GREEN); 
+                statusField.setOpaque(true); 
+                statusField.repaint(); 
+                break;
             case -1: statusField.setText("You Lost!!!"); statusField.setBackground(Color.RED); statusField.setOpaque(true); statusField.repaint(); endTheGame(); break;
         }
+    }
+    @Override
+    void move() {
+        dg.move();
+        actualScore.setText(dg.getActualScore());
+        actualScore.repaint();
     }
     private Color setButtonColor(int i){
         Color clr = new Color(230,i*5,255-i*2);
         return clr;
     }
+    
+    
 }

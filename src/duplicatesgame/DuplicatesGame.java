@@ -36,7 +36,7 @@ public class DuplicatesGame {
      */
     private final Collection possibleGameElements, initialGameElements;
     private static DuplicatesGame INSTANCE;
-    private final int LEVEL;
+    private final Score SCORE;
     /**
      * ********************** CLASS API BEGINS ************************
      * Factory methods: getDuplicatesGame(int level); getDuplicatesGame(); (level defaults to 1);
@@ -92,6 +92,19 @@ public class DuplicatesGame {
         return 1; //You won!!!!
     }
     /**
+     * This method will return the actual score of the game, based on the class' SCORE instance
+     * @return 
+     */
+    String getActualScore(){
+        return " " + SCORE.actualScore();
+    }
+    String nextLevel() {
+        return " " + SCORE.nextLevel();
+    }
+    void move() {
+        SCORE.Add();
+    }
+    /**
      * ********************** CLASS API ENDS ************************
      * 
      */
@@ -101,7 +114,7 @@ public class DuplicatesGame {
      */
         assert(INSTANCE==null) : "Constructor called after game already initialized"; 
                 
-        LEVEL = level;
+        SCORE = Score.getScore(level);
         DuplicatesGame.DuplicatesGameList ge = this.new DuplicatesGameList();
         possibleGameElements = ge.getDuplicatesGameList();
         initialGameElements = ge.getInitCollection();

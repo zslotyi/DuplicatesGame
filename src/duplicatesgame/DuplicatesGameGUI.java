@@ -30,6 +30,7 @@ abstract class DuplicatesGameGUI {
     
     abstract boolean putElement(GameField gf, Object ge);
     abstract DuplicatesGameGUI getDuplicatesGameGUIInstance();
+    abstract void move();
     //API Begins**********************************************************
     public int getEmptyFieldsSize(){
         return emptyFields.size();
