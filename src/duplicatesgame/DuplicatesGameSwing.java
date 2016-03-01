@@ -5,7 +5,6 @@
  */
 package duplicatesgame;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -44,7 +43,7 @@ private final static Font BUTTONFONT = new Font("Arial", Font.BOLD, 28);
 private JLabel statusField, actualScore, scoreTitle;
 private JPanel scoreCard;
 private String level = "1";
-
+private JButton newGame;
 
         public static void main(String[] args) {
         INSTANCE = new DuplicatesGameSwing();
@@ -66,12 +65,17 @@ private String level = "1";
             setUpGUI();
             gamePanels = setUpBoard();
             emptyFields = setUpGameElements();
+            System.out.println("GameFields size: " + GameFields.size());
+            
+            
             showGUI();
+            
         }
         DuplicatesGameSwing(){
             //if no level is provided, we default to level 1
             this(1);
         }
+        @Override
         public DuplicatesGameSwing getDuplicatesGameGUIInstance(){
             assert INSTANCE!=null : "Trying to return an instance before initializing";
             return INSTANCE;
@@ -137,6 +141,18 @@ private String level = "1";
             scoreCard.add(scoreTitle);
             scoreCard.add(actualScore);
             
+            newGame = new JButton("New Game");
+            newGame.addActionListener((al)-> {
+                System.out.println("megnyomtad.");
+                reStartGame(1);
+                /* - empty all the fields
+                    - begin a new initial collection with dg.newGame();
+                    - put the new collection on random fields
+                    - create the actual empty fields collection
+                */
+            });
+            scoreCard.add(newGame);
+            
             contentPane.add(scoreCard,sc);
             return tempPanels;
         }
@@ -146,8 +162,8 @@ private String level = "1";
         ArrayList<GameField> temp = (ArrayList)GameFields;
         shuffle(temp);
         ArrayList<GameField> tempgf = new ArrayList<>();
-        emptyFields=GameFields;
-        for(int i=0; (i<initialGameElements.size()*2);i++)
+        emptyFields=new ArrayList<>(GameFields);
+        for(int i=0; (i<initialGameElements.size()*2);i++)//This is where we decide how many game tiles we want at the beginning of the game
         {
             int e = randomize(14,0);
             currentGameElements.add(initialGameElements.get(e));
@@ -160,6 +176,15 @@ private String level = "1";
         emptyFields.removeAll(tempgf);
         System.out.println("used gamefields: "+ tempgf.size() + " empty fields: " + emptyFields.size());
         return emptyFields;
+    }
+    @Override
+    public final void reStartGame(int level) {
+                /* - empty all the fields
+                    - begin a new initial collection with dg.newGame();
+                    - put the new collection on random fields
+                    - create the actual empty fields collection
+                */
+            emptyGameFields();
     }
     @Override
     boolean putElement(GameField gf, Object ge){
@@ -215,6 +240,22 @@ private String level = "1";
         dg.move();
         actualScore.setText(dg.getActualScore());
         actualScore.repaint();
+    }
+    
+    private void emptyGameFields(){
+        System.out.println("GameFields length: " + GameFields.size());
+        int counter = 0;
+    for (Iterator it = GameFields.iterator(); it.hasNext();) {
+        Object gf = it.next();
+        JPanel jp = (JPanel)gamePanels.get(gf);
+        jp.removeAll();
+        jp.setMinimumSize(DMNSN);
+        jp.setPreferredSize(DMNSN);
+        jp.revalidate();
+        jp.repaint();
+        counter++;
+    }
+        System.out.println("Count = " + counter);
     }
     private Color setButtonColor(int i){
         Color clr = new Color(230,i*5,255-i*2);

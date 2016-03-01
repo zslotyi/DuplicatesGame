@@ -34,9 +34,11 @@ public class DuplicatesGame {
      * in a separate thread
      * 
      */
-    private final Collection possibleGameElements, initialGameElements;
+    private final Collection possibleGameElements;
+    private Collection initialGameElements;
     private static DuplicatesGame INSTANCE;
     private final Score SCORE;
+    private final DuplicatesGame.DuplicatesGameList ge;
     /**
      * ********************** CLASS API BEGINS ************************
      * Factory methods: getDuplicatesGame(int level); getDuplicatesGame(); (level defaults to 1);
@@ -104,6 +106,9 @@ public class DuplicatesGame {
     void move() {
         SCORE.Add();
     }
+    void newGame(){
+        initialGameElements = ge.getInitCollection();
+    }
     /**
      * ********************** CLASS API ENDS ************************
      * 
@@ -115,7 +120,7 @@ public class DuplicatesGame {
         assert(INSTANCE==null) : "Constructor called after game already initialized"; 
                 
         SCORE = Score.getScore(level);
-        DuplicatesGame.DuplicatesGameList ge = this.new DuplicatesGameList();
+        ge = this.new DuplicatesGameList();
         possibleGameElements = ge.getDuplicatesGameList();
         initialGameElements = ge.getInitCollection();
         
