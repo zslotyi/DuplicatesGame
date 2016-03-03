@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
 import static java.util.Collections.shuffle;
@@ -19,10 +20,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javafx.scene.layout.Border;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 
 /**
  *
@@ -35,7 +38,7 @@ private final DuplicatesGame dg;
 private final Map gamePanels;
 private Container contentPane;
 private JFrame frame;
-private final ArrayList initialGameElements;
+private ArrayList initialGameElements;
 private static DuplicatesGameSwing INSTANCE;
 private final static Dimension DMNSN = new Dimension(75,75);
 private final static Dimension BTNDMNSN = new Dimension(70,70);
@@ -49,7 +52,6 @@ private JButton newGame;
         INSTANCE = new DuplicatesGameSwing();
         adderThread=INSTANCE.initAdder();
         adderThread.start();
-        System.out.println("Adder thread started");
         }
         Thread initAdder()
         {
@@ -58,18 +60,21 @@ private JButton newGame;
         }
         DuplicatesGameSwing(int level){
             dg = DuplicatesGame.getDuplicatesGame(1);
-            initialGameElements = new ArrayList(dg.getInitialGameElements());
-            currentGameElements = new ArrayList<>();
-            possibleGameElements = new ArrayList(dg.getPossibleGameElements());
+            
+            initGame();
         
             setUpGUI();
             gamePanels = setUpBoard();
             emptyFields = setUpGameElements();
-            System.out.println("GameFields size: " + GameFields.size());
             
             
             showGUI();
             
+        }
+        private void initGame() {
+            initialGameElements = new ArrayList(dg.getInitialGameElements());
+            currentGameElements = new ArrayList<>();
+            possibleGameElements = new ArrayList(dg.getPossibleGameElements());
         }
         DuplicatesGameSwing(){
             //if no level is provided, we default to level 1
@@ -86,10 +91,15 @@ private JButton newGame;
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             contentPane = frame.getContentPane();
             GridBagLayout gridBagLayout = new GridBagLayout();
-            contentPane.setLayout(gridBagLayout);    
+            contentPane.setLayout(gridBagLayout);
+            frame.setMinimumSize(new Dimension(800,700));
+            contentPane.setMinimumSize(new Dimension(800,700));
         }
-
-        /**
+        @Override
+        int getLevel() {
+            return dg.getLevel();
+        }
+         /**
          * This is the method that makes the final steps in displaying the GUI
          */
     public final void showGUI() {
@@ -110,8 +120,10 @@ private JButton newGame;
                 g.fill=GridBagConstraints.BOTH;
                 g.ipadx=8;
                 g.ipady=8;
+          
                 JPanel jp = new JPanel();
-                jp.setSize(DMNSN);
+                jp.setMinimumSize(new Dimension(75,75));
+                jp.setPreferredSize(new Dimension(75,75));
                 contentPane.add(jp,g);
                 
                 tempPanels.put(gf,jp);
@@ -143,7 +155,8 @@ private JButton newGame;
             
             newGame = new JButton("New Game");
             newGame.addActionListener((al)-> {
-                System.out.println("megnyomtad.");
+                
+                resetScore();
                 reStartGame(1);
                 /* - empty all the fields
                     - begin a new initial collection with dg.newGame();
@@ -163,18 +176,18 @@ private JButton newGame;
         shuffle(temp);
         ArrayList<GameField> tempgf = new ArrayList<>();
         emptyFields=new ArrayList<>(GameFields);
-        for(int i=0; (i<initialGameElements.size()*2);i++)//This is where we decide how many game tiles we want at the beginning of the game
+            int howManyElements=initialGameElements.size()+5+dg.getLevel();
+            System.out.println("How many elements: " + howManyElements);
+        for(int i=0; (i<howManyElements);i++)//This is where we decide how many game tiles we want at the beginning of the game
         {
-            int e = randomize(14,0);
+            int e = randomize(initialGameElements.size()-1,0);
             currentGameElements.add(initialGameElements.get(e));
             GameField gf = temp.get(i);
-                    System.out.println("Nr. of empty fields: " + " " + gf);
                 tempgf.add(gf);
                 boolean addSuccess = putElement(gf, initialGameElements.get(e));
                     assert addSuccess==true : "We could not add this button: " + initialGameElements.get(e).toString();
         }
         emptyFields.removeAll(tempgf);
-        System.out.println("used gamefields: "+ tempgf.size() + " empty fields: " + emptyFields.size());
         return emptyFields;
     }
     @Override
@@ -185,37 +198,42 @@ private JButton newGame;
                     - create the actual empty fields collection
                 */
             emptyGameFields();
+            dg.newGame(level);
+            initGame();
+            emptyFields = setUpGameElements();
+            actualScore.setText(dg.getActualScore());
+            statusField.setText("Level: " + dg.getLevel());
+            frame.revalidate();
+            frame.repaint();
+            restartAdderThread();
     }
     @Override
     boolean putElement(GameField gf, Object ge){
         boolean success=false;
         try {    
                 JPanel jp = (JPanel)gamePanels.get(gf);
-                //jp.setSize(DMNSN);
-                //System.out.println("This is the Button we're adding the element to: " + ge);
+                jp.setMinimumSize(DMNSN);
+                jp.setPreferredSize(DMNSN);
                 JButton jb = new JButton(ge.toString());
                 jb.setPreferredSize(BTNDMNSN);
                 jb.setFont(BUTTONFONT);
                 jb.setBackground(setButtonColor(parseInt(ge.toString())));
                 jb.addActionListener((al)->{
-                jp.remove(jb);
-                jp.validate();
-                jp.repaint();
-                move();
-                removeGameElement(ge,currentGameElements);
-                emptyFields.add(gf);
-                getWin(dg.getWin(ge, currentGameElements));
+                    jp.remove(jb);
+                    jp.validate();
+                    jp.repaint();
+                    move();
+                    removeGameElement(ge,currentGameElements);
+                    emptyFields.add(gf);
+                    getWin(dg.getWin(ge, currentGameElements));
                 });
                 
-                ///jb.setSize(DMNSN);
-                jp.add(jb);
+                 jp.add(jb);
                 jp.validate();
-                //jb.validate();
                 jp.repaint();
-                //jb.repaint();
                 success=true;
-                //System.out.println("Added this emlement " + ge + " to this field: " + gf);
-            }
+                
+        }
         catch(ArrayIndexOutOfBoundsException e) {
         
         }
@@ -226,13 +244,17 @@ private JButton newGame;
     void getWin(int i){
         switch(i){
             case 1: 
-                level = dg.nextLevel();
                 statusField.setText("Level: " + level); 
                 statusField.setBackground(Color.GREEN); 
                 statusField.setOpaque(true); 
-                statusField.repaint(); 
+                reStartGame(dg.getLevel()+1);
                 break;
-            case -1: statusField.setText("You Lost!!!"); statusField.setBackground(Color.RED); statusField.setOpaque(true); statusField.repaint(); endTheGame(); break;
+            case -1: statusField.setText("You Lost!!!"); 
+            statusField.setBackground(Color.RED); 
+            statusField.setOpaque(true); 
+            statusField.repaint(); 
+            endTheGame(); 
+            break;
         }
     }
     @Override
@@ -241,7 +263,10 @@ private JButton newGame;
         actualScore.setText(dg.getActualScore());
         actualScore.repaint();
     }
-    
+    @Override
+    int resetScore(){
+        return dg.resetScore();
+    }
     private void emptyGameFields(){
         System.out.println("GameFields length: " + GameFields.size());
         int counter = 0;
@@ -256,6 +281,25 @@ private JButton newGame;
         counter++;
     }
         System.out.println("Count = " + counter);
+    }
+    @Override
+    void gameOver()
+    {
+        statusField.setText("Game Over");
+        statusField.setBackground(Color.red);
+        statusField.revalidate();
+        statusField.repaint();
+        endTheGame();
+    }
+    @Override
+    void restartAdderThread() {
+         if(adderThread==null)
+         {
+                
+                adderThread=initAdder();
+                adderThread.start();
+                beginGame();
+         }
     }
     private Color setButtonColor(int i){
         Color clr = new Color(230,i*5,255-i*2);
