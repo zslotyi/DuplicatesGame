@@ -13,6 +13,7 @@ import static java.lang.Thread.sleep;
  */
 public class Adder implements Runnable {
     private final DuplicatesGameGUI DGG;
+    private boolean stopIt=false;
     Adder(DuplicatesGameGUI dgg){
         DGG=dgg;
     }
@@ -24,17 +25,24 @@ public class Adder implements Runnable {
                     if(DGG==null) throw new AssertionError("hmmmm....");
             
                 try {
-                    for(;DGG.isOn();)
+                    for(;((DGG.isOn())&&(!stopIt));)
                     {
-                    DGG.putOnEmptyField();
-                    System.out.println("PutOnEmptyField lefutott. Ennyi üres hely van: " + DGG.getEmptyFieldsSize());
-                    sleep(5*1000);
+                        if (DGG.getEmptyFieldsSize()>0){
+                        DGG.putOnEmptyField();
+                        System.out.println("Sleeping: " + 5*Math.pow(0.9, DGG.getLevel())*1100);
+                        sleep((long)(5*Math.pow(0.9, DGG.getLevel())*1100));
+                        }
+                        else {
+                            DGG.gameOver();
+                        }
                     }
                 }
                 catch(InterruptedException ie)
                 {
-                    ie.printStackTrace();
                 }
             
+    }
+    void stopIt(){
+        stopIt=true;
     }
 }
