@@ -32,15 +32,23 @@ abstract class DuplicatesGameGUI {
     abstract boolean putElement(GameField gf, Object ge);
     abstract DuplicatesGameGUI getDuplicatesGameGUIInstance();
     abstract void move();
+    abstract int resetScore();
+    abstract int getLevel();
+    abstract void gameOver();
+    abstract void restartAdderThread();
     //API Begins**********************************************************
     public int getEmptyFieldsSize(){
         return emptyFields.size();
     }
-    public boolean isOn(){
+    boolean isOn(){
         return !endGame;
     }
     void endTheGame(){
         endGame=true;
+        adderThread=null;
+    }
+    void beginGame(){
+        endGame=false;
     }
     //API Ends************************************************************
     DuplicatesGameGUI(int boardSize){
@@ -79,9 +87,13 @@ abstract class DuplicatesGameGUI {
     public void putOnEmptyField() {
         assert emptyFields.size() > 0 : "you have to have more than zero empty fields";
         
-        int e = randomize(emptyFields.size()-1,0);
+        int e=0;
+            if (emptyFields.size()>1)
+                e = randomize(emptyFields.size()-1,0);
+            else
+                e=0;
+            
         int k = randomize(possibleGameElements.size()-1,0);
-        System.out.println("Adding this element: " + emptyFields.get(e) + " to this empty field: " + possibleGameElements.get(k));
         GameField gf = (GameField)emptyFields.get(e);
         
         boolean success = putElement(gf,possibleGameElements.get(k));

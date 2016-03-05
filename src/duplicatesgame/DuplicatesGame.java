@@ -39,6 +39,7 @@ public class DuplicatesGame {
     private static DuplicatesGame INSTANCE;
     private final Score SCORE;
     private final DuplicatesGame.DuplicatesGameList ge;
+    private int numberOfInitialElements=10;
     /**
      * ********************** CLASS API BEGINS ************************
      * Factory methods: getDuplicatesGame(int level); getDuplicatesGame(); (level defaults to 1);
@@ -103,10 +104,20 @@ public class DuplicatesGame {
     String nextLevel() {
         return " " + SCORE.nextLevel();
     }
+    int getLevel() {
+        return SCORE.getLevel();
+    }
     void move() {
         SCORE.Add();
     }
-    void newGame(){
+    int resetScore() {
+        return SCORE.resetScore();
+    }
+    void resetLevel() {
+        SCORE.resetLevel();
+    }
+    void newGame(int level){
+        SCORE.setLevel(level);
         initialGameElements = ge.getInitCollection();
     }
     /**
@@ -153,7 +164,10 @@ public class DuplicatesGame {
              */
         List<Integer> temp = new ArrayList(this.getDuplicatesGameList());
         shuffle(temp);
-        return temp.subList(0,15); //value is arbitrary. for testing purposes we are dealing with a 7x7 field, and an initial set of 30 game elements
+            
+                if(getLevel()%5==0)
+                    {numberOfInitialElements+=5;}
+        return temp.subList(0,numberOfInitialElements); //value is arbitrary. for testing purposes we are dealing with a 7x7 field, and an initial set of 15 game elements
         }
         //Class API Ends
         private DuplicatesGameList(){
@@ -162,11 +176,11 @@ public class DuplicatesGame {
         }
         private Collection initGameElements(){
             //this method initializes the possible Game Elements list
-            Collection<Integer> tempElements = new ArrayList<>();
+            Collection<GameElement> tempElements = new ArrayList<>();
             
                 for(int i=0;i<50;i++)
                 {
-                    tempElements.add(i);
+                    tempElements.add(GameElement.getGameElement(i));
                 }
             return tempElements;
         }

@@ -31,14 +31,21 @@ public class Score {
     int nextLevel() {
         return ++level;
     }
+    void resetLevel() {
+        level=1;
+    }
+    void setLevel (int l){
+        level=l;
+    }
     int getLevel() {
         return level;
+    }
+    int resetScore() {
+        score = 0;
+        return score;
     }
     //API Ends
     private Score(){
         
-    }
-    private void setLevel(int l){
-        level=l;
     }
 }
