@@ -39,7 +39,7 @@ public class DuplicatesGame {
     private static DuplicatesGame INSTANCE;
     private final Score SCORE;
     private final DuplicatesGame.DuplicatesGameList ge;
-    private int numberOfInitialElements=10;
+    private int numberOfInitialElements=8;
     /**
      * ********************** CLASS API BEGINS ************************
      * Factory methods: getDuplicatesGame(int level); getDuplicatesGame(); (level defaults to 1);
@@ -178,7 +178,7 @@ public class DuplicatesGame {
             //this method initializes the possible Game Elements list
             Collection<GameElement> tempElements = new ArrayList<>();
             
-                for(int i=0;i<50;i++)
+                for(int i=0;i<37;i++)
                 {
                     tempElements.add(GameElement.getGameElement(i));
                 }

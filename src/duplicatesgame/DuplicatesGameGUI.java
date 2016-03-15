@@ -56,7 +56,7 @@ abstract class DuplicatesGameGUI {
         GameFields = initBoard();
     }
     DuplicatesGameGUI(){
-        this(7); //value is arbitrary, but we need to have an initial BOARD_SIZE value
+        this(6); //value is arbitrary, but we need to have an initial BOARD_SIZE value
     }
     public Collection getBoard(){
         assert !GameFields.isEmpty() : "Game board should have more than zero fields";
