@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.scene.layout.Border;
+import javafx.stage.Stage;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -305,6 +306,12 @@ private JButton newGame;
         Color clr = new Color(230,i*5,255-i*2);
         return clr;
     }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     
     
 }

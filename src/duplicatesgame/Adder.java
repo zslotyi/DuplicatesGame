@@ -6,6 +6,7 @@
 package duplicatesgame;
 
 import static java.lang.Thread.sleep;
+import javafx.application.Platform;
 
 /**
  *
@@ -25,16 +26,17 @@ public class Adder implements Runnable {
                     if(DGG==null) throw new AssertionError("hmmmm....");
             
                 try {
-                    for(;((DGG.isOn())&&(!stopIt));)
+                    for(;;)
                     {
-                        if (DGG.getEmptyFieldsSize()>0){
-                        DGG.putOnEmptyField();
+                        if((DGG.isOn())&&(!stopIt)){
+                            if (DGG.getEmptyFieldsSize()>0){
+                                Platform.runLater(() -> DGG.putOnEmptyField());
+                                                            }
+                                                    }
+
                         System.out.println("Sleeping: " + 5*Math.pow(0.9, DGG.getLevel())*1100);
                         sleep((long)(5*Math.pow(0.9, DGG.getLevel())*1100));
-                        }
-                        else {
-                            DGG.gameOver();
-                        }
+                        
                     }
                 }
                 catch(InterruptedException ie)

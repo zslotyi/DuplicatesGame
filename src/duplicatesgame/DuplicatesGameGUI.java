@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import javafx.application.Application;
 
 /**
  *
@@ -20,12 +21,12 @@ interface Playable{
     void putOnEmptyField();
     void reStartGame(int level);
 }
-abstract class DuplicatesGameGUI {
+abstract class DuplicatesGameGUI extends Application {
     final int BOARD_SIZE;
     final List GameFields;
     static Thread adderThread;
     static List emptyFields, possibleGameElements, currentGameElements;
-    private boolean endGame=false;
+    boolean endGame=false;
 
     int count=0;
     
