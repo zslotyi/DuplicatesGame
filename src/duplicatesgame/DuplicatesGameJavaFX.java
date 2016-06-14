@@ -33,6 +33,7 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
     private Label emptyFieldCounter, currentGameElementCounter, initialGameElementCounter, levelCounter, scoreCounter, winMessage;
     private String winMessageText;
     private Button pauseButton, resumeButton;
+    private Scene primaryScene;
     
     public static void main (String[] args) {
     
@@ -96,7 +97,8 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
         boolean success = false;
         try {
             Button actualButton = new Button(ge.toString());
-            
+            actualButton.getStyleClass().add("button");
+            System.out.println("added");
                  actualButton.setOnAction((al)->{
                      actualButton.setVisible(false);
                      move(ge,currentGameElements,gf);
@@ -181,14 +183,18 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
         pauseButton.setDisable(false);
         resumeButton.setDisable(true);
     }
-
+    private void importCSS(){
+        String css = this.getClass().getResource("duplicatesgame.css").toExternalForm();
+        primaryScene.getStylesheets().add(css);
+    }
     @Override
     public void start(Stage primaryStage) throws Exception {
         dg = DuplicatesGame.getDuplicatesGame();
         
         primaryStage.setTitle("JavaFX implementation of DuplicatesGame");
         rootNode = new GridPane();
-        Scene primaryScene = new Scene(rootNode, 600, 700);
+        primaryScene = new Scene(rootNode, 600, 700);
+        importCSS();
         primaryStage.setScene(primaryScene);
         
         /**
