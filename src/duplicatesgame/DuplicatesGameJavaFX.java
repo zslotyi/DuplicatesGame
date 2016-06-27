@@ -97,7 +97,7 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
         boolean success = false;
         try {
             Button actualButton = new Button(ge.toString());
-            actualButton.getStyleClass().add("button");
+            actualButton.getStyleClass().add("button" + "-" + ge.toString());
             System.out.println("added");
                  actualButton.setOnAction((al)->{
                      actualButton.setVisible(false);
