@@ -184,7 +184,7 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
         resumeButton.setDisable(true);
     }
     private void importCSS(){
-        String css = this.getClass().getResource("duplicatesgame.css").toExternalForm();
+        String css = this.getClass().getResource("_duplicatesgame.css").toExternalForm();
         primaryScene.getStylesheets().add(css);
     }
     @Override
