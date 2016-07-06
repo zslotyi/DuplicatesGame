@@ -32,7 +32,7 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
     private List initialGameElements;
     private Label emptyFieldCounter, currentGameElementCounter, initialGameElementCounter, levelCounter, scoreCounter, winMessage;
     private String winMessageText;
-    private Button pauseButton, resumeButton;
+    private Button pauseButton, resumeButton, clearButton;
     private Scene primaryScene;
     
     public static void main (String[] args) {
@@ -54,9 +54,11 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
          winMessage = new Label ("Welcome to Duplicate Game!");
          pauseButton = new Button ("Pause Game");
          resumeButton = new Button ("Resume Game");
+         clearButton = new Button ("Clear Board");
             pauseButton.setOnAction((al)->pauseThread());
             resumeButton.setOnAction((al)->resumeThread());
             resumeButton.setDisable(true);
+            clearButton.setOnAction((al)->emptyGameFields());
          
          
          rootNode.add(emptyFieldCounter, 'A',8,6,1);
@@ -69,6 +71,7 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
             pauseButton.getStyleClass().add("button" + "-" + "pause");
          rootNode.add(resumeButton,'D',14,3,1);
             resumeButton.getStyleClass().add("button" + "-" + "resume");
+         rootNode.add(clearButton,'A',15,6,1);
      }
      private void updateBoard() {
          emptyFieldCounter.setText("Number of empty fields: " + emptyFields.size());
@@ -210,5 +213,36 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
         adderThread=this.initAdder();
         adderThread.start();
     }
-    
+    public final void reStartGame(int level){
+         /*         - empty all the fields
+                    - begin a new initial collection with dg.newGame();
+                    - put the new collection on random fields
+                    - create the actual empty fields collection
+         */
+    }
+    private void emptyGameFields(){
+       /**
+        * Remove all the Game Elements from the Board
+        */
+       if(currentGameElements.size()<=0) {
+           throw new AssertionError("When emptying the Game Fields, the Game Fiels size should be larger than zero");
+       
+        } else {   
+           for (Object ge : currentGameElements)
+           {    
+               if (!(ge instanceof GameElement))
+               {
+                   throw new AssertionError("Something went wrong here");
+               }
+               else
+               {
+                   rootNode.getChildren().clear();
+                   updateBoard();
+               }
+               
+           }
+           System.out.println("Board Cleared");
+         }
+    }
 }
+ 
