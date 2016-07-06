@@ -66,7 +66,9 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
          rootNode.add(scoreCounter,'A',12,6,1);
          rootNode.add(winMessage,'A',13,6,1);
          rootNode.add(pauseButton,'A',14,3,1);
+            pauseButton.getStyleClass().add("button" + "-" + "pause");
          rootNode.add(resumeButton,'D',14,3,1);
+            resumeButton.getStyleClass().add("button" + "-" + "resume");
      }
      private void updateBoard() {
          emptyFieldCounter.setText("Number of empty fields: " + emptyFields.size());
