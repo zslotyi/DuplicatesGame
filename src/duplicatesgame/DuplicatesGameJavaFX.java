@@ -9,6 +9,7 @@ package duplicatesgame;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,7 +28,7 @@ import javafx.stage.Stage;
  * 
  */
 public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
-    private GridPane rootNode;
+    private GridPane rootNode, scoreNode, boardNode;
     private DuplicatesGame dg;
     private List initialGameElements;
     private Label emptyFieldCounter, currentGameElementCounter, initialGameElementCounter, levelCounter, scoreCounter, winMessage;
@@ -54,24 +55,24 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
          winMessage = new Label ("Welcome to Duplicate Game!");
          pauseButton = new Button ("Pause Game");
          resumeButton = new Button ("Resume Game");
-         clearButton = new Button ("Clear Board");
+         clearButton = new Button ("Restart Game");
             pauseButton.setOnAction((al)->pauseThread());
             resumeButton.setOnAction((al)->resumeThread());
             resumeButton.setDisable(true);
-            clearButton.setOnAction((al)->emptyGameFields());
+            clearButton.setOnAction((al)->reStartGame(dg.getLevel()));
          
          
-         rootNode.add(emptyFieldCounter, 'A',8,6,1);
-         rootNode.add(currentGameElementCounter,'A',9,6,1);
-         rootNode.add(initialGameElementCounter,'A',10,6,1);
-         rootNode.add(levelCounter,'A',11,6,1);
-         rootNode.add(scoreCounter,'A',12,6,1);
-         rootNode.add(winMessage,'A',13,6,1);
-         rootNode.add(pauseButton,'A',14,3,1);
+         scoreNode.add(emptyFieldCounter, 'A',8,6,1);
+         scoreNode.add(currentGameElementCounter,'A',9,6,1);
+         scoreNode.add(initialGameElementCounter,'A',10,6,1);
+         scoreNode.add(levelCounter,'A',11,6,1);
+         scoreNode.add(scoreCounter,'A',12,6,1);
+         scoreNode.add(winMessage,'A',13,6,1);
+         scoreNode.add(pauseButton,'A',14,3,1);
             pauseButton.getStyleClass().add("button" + "-" + "pause");
-         rootNode.add(resumeButton,'D',14,3,1);
+         scoreNode.add(resumeButton,'D',14,3,1);
             resumeButton.getStyleClass().add("button" + "-" + "resume");
-         rootNode.add(clearButton,'A',15,6,1);
+         scoreNode.add(clearButton,'A',15,6,1);
      }
      private void updateBoard() {
          emptyFieldCounter.setText("Number of empty fields: " + emptyFields.size());
@@ -109,7 +110,7 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
                      move(ge,currentGameElements,gf);
                 });
             
-            rootNode.add(actualButton, gf.getX(), gf.getY());
+            boardNode.add(actualButton, gf.getX(), gf.getY());
             success=true;
         }
         catch (ArrayIndexOutOfBoundsException e) {
@@ -198,6 +199,12 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
         
         primaryStage.setTitle("JavaFX implementation of DuplicatesGame");
         rootNode = new GridPane();
+        boardNode = new GridPane();
+            
+        scoreNode = new GridPane();
+            
+        rootNode.add(boardNode,1,1);
+        rootNode.add(scoreNode,1,2);
         primaryScene = new Scene(rootNode, 600, 700);
         importCSS();
         primaryStage.setScene(primaryScene);
@@ -212,6 +219,10 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
         primaryStage.show();
         adderThread=this.initAdder();
         adderThread.start();
+            scoreNode.getStyleClass().add("boardsize");
+            boardNode.getStyleClass().add("boardsize");
+        
+       
     }
     public final void reStartGame(int level){
          /*         - empty all the fields
@@ -219,6 +230,13 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
                     - put the new collection on random fields
                     - create the actual empty fields collection
          */
+         emptyGameFields();
+         currentGameElements=null;
+         initialGameElements=null;
+         dg.newGame(level);
+         initGame();
+         setUpGameElements();
+         updateBoard();
     }
     private void emptyGameFields(){
        /**
@@ -228,7 +246,7 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
            throw new AssertionError("When emptying the Game Fields, the Game Fiels size should be larger than zero");
        
         } else {   
-           for (Object ge : currentGameElements)
+           /*for (Object ge : currentGameElements)
            {    
                if (!(ge instanceof GameElement))
                {
@@ -236,8 +254,19 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
                }
                else
                {
-                   rootNode.getChildren().clear();
-                   updateBoard();
+                   super.removeGameElement(ge,currentGameElements);
+               }
+               
+           }*/
+           for (Node child : boardNode.getChildren()) {
+               
+               if (!(child instanceof Button))
+               {
+                   throw new AssertionError("We found something we shouldn't have found");
+               }
+               else
+               {
+                   child.setVisible(false);
                }
                
            }

@@ -9,5 +9,11 @@ and open the template in the editor.
 */
 
 .button{
-    -fx-background:#CAFFEE;
+    -fx-background:#333333;
+}
+.boardsize {
+    -fx-min-height:300px;
+    -fx-max-height:300px;
+    -fx-preferred-height:300px;
+    -fx-background:#CAFF11;
 }
