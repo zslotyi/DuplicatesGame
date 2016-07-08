@@ -9,5 +9,136 @@ and open the template in the editor.
 */
 
 .button{
-    -fx-background-color:#333333;
+    -fx-background-color:#CAFFEE;
+    -fx-min-height:40px;
+    -fx-max-heigh:40px;
+    -fx-preferred-height:40px;
+    -fx-min-width:40px;
+    -fx-max-width:40px;
+    -fx-preferred-width:40px;
+}
+.button-pause, .button-resume {
+     -fx-min-width:100px;
+    -fx-max-width:100px;
+    -fx-preferred-width:100px;
+}
+.button-1{
+    -fx-background-color:#CAFFEE;
+}
+.button-2{
+    -fx-background-color:#F3B6B1;
+}
+.button-3{
+    -fx-background-color:#ABAD59;
+}
+.button-4{
+    -fx-background-color:#FFD35C;
+}
+.button-5{
+    -fx-background-color:#FF8201;
+}
+.button-6{
+    -fx-background-color:#F37252;
+}
+.button-7{
+    -fx-background-color:#EA3E70;
+}
+.button-8{
+    -fx-background-color:#4BC4D5;
+}
+.button-9{
+    -fx-background-color:#0180B5;
+}
+.button-10{
+    -fx-background-color:#954567;
+}
+.button-11{
+    -fx-background-color:#C72C3A;
+}
+.button-12{
+    -fx-background-color:#FDD782;
+}
+.button-13{
+    -fx-background-color:#8CA65F;
+}
+.button-14{
+    -fx-background-color:#B3A183;
+}
+.button-15{
+    -fx-background-color:#C2BBA9;
+}
+.button-16{
+    -fx-background-color:#C7E3DC;
+}
+.button-17{
+    -fx-background-color:#02B5A0;
+}
+.button-18{
+    -fx-background-color:#FEC52D;
+}
+.button-19{
+    -fx-background-color:#F57461;
+}
+.button-20{
+    -fx-background-color:#007E87;
+}
+.button-21{
+    -fx-background-color:#A9DDC7;
+}
+.button-22{
+    -fx-background-color:#CF9B41;
+}
+.button-23{
+    -fx-background-color:#5CAB56;
+}
+.button-24{
+    -fx-background-color:#9FC2AA;
+}
+.button-25{
+    -fx-background-color:#f3858b;
+}
+.button-26{
+    -fx-background-color:#f9aa6b;
+}
+.button-27{
+    -fx-background-color:#ce87a3;
+}
+.button-28{
+    -fx-background-color:#F4EA96;
+}
+.button-29{
+    -fx-background-color:#FFC7AE;
+}
+.button-30{
+    -fx-background-color:#B1DFF3;
+}
+.button-31{
+    -fx-background-color:#C6E3AB;
+}
+.button-32{
+    -fx-background-color:#C2B4EA;
+}
+.button-33{
+    -fx-background-color:#F9CFDD;
+}
+.button-34{
+    -fx-background-color:#F3856A;
+}
+.button-35{
+    -fx-background-color:#ABAD59;
+}
+.button-36{
+    -fx-background-color:#FFCD88;
+}
+.button-37{
+    -fx-background-color:#82B19F;
+}
+.button-38{
+    -fx-background-color:#F18956;
+}
+.button-39{
+    -fx-background-color:#8EA9D6;
+}
+.button-40{
+    -fx-background-color:#FFFFFF;
 }
