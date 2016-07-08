@@ -88,7 +88,7 @@ public class DuplicatesGame {
             //If there isn't another instance of the removed element in the list, you won;
             return -1;
         }
-        else if(new HashSet(currentGameElements).size()<currentGameElements.size()) {
+        else if(getNumberOfDuplicates(currentGameElements) > 0) {
             //We still have duplicates --> the game moves on
             return 0;
         }
@@ -119,6 +119,10 @@ public class DuplicatesGame {
     void newGame(int level){
         SCORE.setLevel(level);
         initialGameElements = ge.getInitCollection();
+    }
+    int getNumberOfDuplicates(List currentGameElements)
+    {
+        return currentGameElements.size() - new HashSet(currentGameElements).size();
     }
     /**
      * ********************** CLASS API ENDS ************************

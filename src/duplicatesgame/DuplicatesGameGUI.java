@@ -24,9 +24,10 @@ interface Playable{
 abstract class DuplicatesGameGUI extends Application {
     final int BOARD_SIZE;
     final List GameFields;
-    static Thread adderThread;
+    Thread adderThread;
     static List emptyFields, possibleGameElements, currentGameElements;
     boolean endGame=false;
+    private boolean gameOver=false;
 
     int count=0;
     
@@ -37,6 +38,7 @@ abstract class DuplicatesGameGUI extends Application {
     abstract int getLevel();
     abstract void gameOver();
     abstract void restartAdderThread();
+    abstract void updateBoard();
     //API Begins**********************************************************
     public int getEmptyFieldsSize(){
         return emptyFields.size();
@@ -50,6 +52,12 @@ abstract class DuplicatesGameGUI extends Application {
     }
     void beginGame(){
         endGame=false;
+    }
+    void setGameOver() {
+        gameOver=true;
+    }
+    boolean isGameOver() {
+        return gameOver;
     }
     //API Ends************************************************************
     DuplicatesGameGUI(int boardSize){

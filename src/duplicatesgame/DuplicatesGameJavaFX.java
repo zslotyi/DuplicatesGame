@@ -9,12 +9,14 @@ package duplicatesgame;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  *
@@ -25,13 +27,24 @@ import javafx.stage.Stage;
  * game move, win/lose working: 15:06
  * adder thread running: 15:29
  * pause-resume game working: 15:54
+ * start new game working - 2016. 07. 08. 14:36
+ * css+layout working - 2016. 07. 08. 14:36
+ * disable all buttons when winning or losing - 14:47
+ * Adder thread stops when closing the window - 15:27
+ * Increasing levels when winning the game - 15:42
+ * Counting scores - 15:49
+ * empty fields counter updates after adding new element by Adder thread - 16:06
+ * duplicate counter working - 16:14
+ * 
+ * 
+ * 
  * 
  */
 public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
     private GridPane rootNode, scoreNode, boardNode;
     private DuplicatesGame dg;
     private List initialGameElements;
-    private Label emptyFieldCounter, currentGameElementCounter, initialGameElementCounter, levelCounter, scoreCounter, winMessage;
+    private Label emptyFieldCounter, currentGameElementCounter, initialGameElementCounter, levelCounter, scoreCounter, winMessage, duplicateCounter;
     private String winMessageText;
     private Button pauseButton, resumeButton, clearButton;
     private Scene primaryScene;
@@ -56,6 +69,7 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
          pauseButton = new Button ("Pause Game");
          resumeButton = new Button ("Resume Game");
          clearButton = new Button ("Restart Game");
+         duplicateCounter = new Label ("Number of duplicates remaining: " + dg.getNumberOfDuplicates(currentGameElements));
             pauseButton.setOnAction((al)->pauseThread());
             resumeButton.setOnAction((al)->resumeThread());
             resumeButton.setDisable(true);
@@ -73,11 +87,15 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
          scoreNode.add(resumeButton,'D',14,3,1);
             resumeButton.getStyleClass().add("button" + "-" + "resume");
          scoreNode.add(clearButton,'A',15,6,1);
+            clearButton.getStyleClass().add("button" + "-" + "resume");
+         scoreNode.add(duplicateCounter,'A',16,6,1);
      }
-     private void updateBoard() {
+     @Override
+     void updateBoard() {
          emptyFieldCounter.setText("Number of empty fields: " + emptyFields.size());
          currentGameElementCounter.setText("Number of current game elements: " + currentGameElements.size());
          initialGameElementCounter.setText("Number of initial game elements: " + initialGameElements.size());
+         duplicateCounter.setText("Number of duplicates remaining: " + dg.getNumberOfDuplicates(currentGameElements));
          levelCounter.setText("Level: " + dg.getLevel());
          scoreCounter.setText("Score: " + dg.getActualScore());
          winMessage.setText(winMessageText);
@@ -143,10 +161,14 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
                 
                 switch(dg.getWin(ge, currentGameElements)) {
                     case 1: winMessageText="You won! Congrats";
+                            int level = dg.getLevel();
+                            reStartGame(++level);
                         break;
                     case -1: winMessageText="You Lose! Too bad, try again :-(";
+                            gameOver();
                         break;
                     case 0: winMessageText="Leave only one of each number on the field to win!";
+                        dg.move();
                         break;
                 }
          }
@@ -167,7 +189,8 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
 
     @Override
     void gameOver() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                            disableAllButtons();
+                            endGame=true;
     }
 
     @Override
@@ -179,6 +202,7 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
             Thread t = initAdder(this);
             return t;
         }
+  
     private void pauseThread(){
         endGame=true;
         pauseButton.setDisable(true);
@@ -217,6 +241,14 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
         setUpGameElements();
         setupBoard(); //additional information displayed
         primaryStage.show();
+         primaryStage.setOnCloseRequest((WindowEvent e) -> {
+             try {
+                 setGameOver();
+                 Platform.exit();
+             } catch (Exception e1) {
+                 e1.printStackTrace();
+             }
+        });
         adderThread=this.initAdder();
         adderThread.start();
             scoreNode.getStyleClass().add("boardsize");
@@ -267,6 +299,38 @@ public class DuplicatesGameJavaFX extends DuplicatesGameGUI {
                else
                {
                    child.setVisible(false);
+               }
+               
+           }
+           System.out.println("Board Cleared");
+         }
+    }
+    private void disableAllButtons() {
+               if(currentGameElements.size()<=0) {
+           throw new AssertionError("When emptying the Game Fields, the Game Fiels size should be larger than zero");
+       
+        } else {   
+           /*for (Object ge : currentGameElements)
+           {    
+               if (!(ge instanceof GameElement))
+               {
+                   throw new AssertionError("Something went wrong here");
+               }
+               else
+               {
+                   super.removeGameElement(ge,currentGameElements);
+               }
+               
+           }*/
+           for (Node child : boardNode.getChildren()) {
+               
+               if (!(child instanceof Button))
+               {
+                   throw new AssertionError("We found something we shouldn't have found");
+               }
+               else
+               {
+                   child.setDisable(true);
                }
                
            }

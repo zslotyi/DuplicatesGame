@@ -12,9 +12,9 @@ import javafx.application.Platform;
  *
  * @author Zsolt
  */
-public class Adder implements Runnable {
+public class Adder extends Thread implements Runnable {
     private final DuplicatesGameGUI DGG;
-    private boolean stopIt=false;
+    private static boolean stopIt=false;
     Adder(DuplicatesGameGUI dgg){
         DGG=dgg;
     }
@@ -26,11 +26,16 @@ public class Adder implements Runnable {
                     if(DGG==null) throw new AssertionError("hmmmm....");
             
                 try {
-                    for(;;)
+                    for(;!DGG.isGameOver();)
                     {
                         if((DGG.isOn())&&(!stopIt)){
                             if (DGG.getEmptyFieldsSize()>0){
-                                Platform.runLater(() -> DGG.putOnEmptyField());
+                                Platform.runLater(() -> 
+                                            {DGG.putOnEmptyField();
+                                             DGG.updateBoard();
+                                            });
+                                                         
+                                                        
                                                             }
                                                     }
 
@@ -44,7 +49,7 @@ public class Adder implements Runnable {
                 }
             
     }
-    void stopIt(){
+    static void stopIt(){
         stopIt=true;
     }
 }
